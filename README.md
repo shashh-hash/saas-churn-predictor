@@ -3,10 +3,12 @@
 An interactive machine learning web app that predicts client churn risk for B2B SaaS companies — built from hands-on experience managing enterprise accounts at Shipsy and ZingHR.
 
 ## 🚀 Live Demo
-> Run locally using the instructions below.
+👉 **[Open the app](https://saas-churn-predictor.streamlit.app)**
 
 ## 💡 Motivation
-After 2 years as the primary interface between enterprise clients and SaaS product teams, I noticed that churn was rarely a surprise — it was almost always preceded by the same signals: declining logins, rising support tickets, low NPS, and incomplete onboarding. This project turns those observations into a predictive model.
+After 2 years as the primary interface between enterprise clients and SaaS product teams at Shipsy (logistics SaaS) and ZingHR (HR-tech), I noticed that churn was rarely a surprise. It was almost always preceded by the same signals: declining logins, rising support tickets, low NPS scores, and incomplete onboarding.
+
+This project turns those real-world observations into a predictive model. The dataset is synthetically generated, but the churn logic is grounded in actual patterns observed across 15+ enterprise accounts — factors like contract type, CSM assignment, and product adoption depth are weighted based on what genuinely moved the needle in practice.
 
 ## 🛠️ Features
 - **Dashboard** — Portfolio-level view of churn rates by contract type, industry, tenure, and NPS
@@ -15,8 +17,8 @@ After 2 years as the primary interface between enterprise clients and SaaS produ
 
 ## 🧠 Model
 - Algorithm: Random Forest Classifier (scikit-learn)
-- Dataset: Synthetically generated based on real B2B SaaS churn patterns (1,000 clients)
-- Features: Tenure, spend, usage depth, support tickets, NPS, contract type, onboarding completion, CSM assignment
+- Dataset: Synthetically generated (1,000 clients) with churn logic grounded in real B2B SaaS account management experience
+- Features: Tenure, monthly spend, number of users, support tickets, product modules used, last login, NPS score, contract type, onboarding completion, CSM assignment, industry
 - Accuracy: ~80%+
 
 ## ⚙️ Setup & Run
@@ -57,4 +59,4 @@ saas-churn-predictor/
 ## 👤 Author
 **Shashank Tripathi**
 MiM Student @ ESCP Business School
-[LinkedIn](https://linkedin.com/in/shashank-tripathi) · [GitHub](https://github.com/shashh-hash)
+[LinkedIn](https://www.linkedin.com/in/shashank-tripathi-a46679190/) · [GitHub](https://github.com/shashh-hash)
