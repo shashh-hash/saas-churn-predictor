@@ -1,288 +1,241 @@
-/* ═══════════════════════════════════════════════════════════
-   B2B SaaS Churn Predictor – app.js
-   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   ChurnIQ — app.js
+   ═══════════════════════════════════════════════════════ */
 
-// ── Tab Navigation ─────────────────────────────────────────
-document.querySelectorAll('.nav-btn').forEach(btn => {
+// ── Tab Navigation ────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const tab = btn.dataset.tab;
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    const id = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(s => s.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('tab-' + tab).classList.add('active');
-    // Lazy-init charts when switching to their tab
-    if (tab === 'insights' && !featureChartInit) initFeatureChart();
+    document.getElementById('tab-' + id).classList.add('active');
+    if (id === 'insights' && !featureChartReady) initFeatureChart();
   });
 });
 
-// ── Slider Sync ────────────────────────────────────────────
-function syncVal(input, spanId) {
-  document.getElementById(spanId).textContent = input.value;
-}
+// ── Chart global defaults ─────────────────────────────────
+Chart.defaults.color          = '#7a7167';
+Chart.defaults.borderColor    = '#272320';
+Chart.defaults.font.family    = "'Inter', sans-serif";
+Chart.defaults.font.size      = 11;
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+Chart.defaults.plugins.legend.labels.padding  = 14;
 
-// ── Chart Defaults ─────────────────────────────────────────
-Chart.defaults.color = '#8892aa';
-Chart.defaults.borderColor = '#2e3250';
-Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+const ACCENT  = '#c9f531';
+const DANGER  = '#ff5252';
+const WARN    = '#ff9f2e';
+const SUCCESS = '#3dffa0';
+const MUTED   = '#7a7167';
+const S3      = '#201e1b';
+const GRID    = '#272320';
 
-const ACCENT   = '#7c6cf8';
-const ACCENT2  = '#56cfb2';
-const DANGER   = '#f76b6b';
-const WARN     = '#f5a623';
-const SURFACE2 = '#22263a';
+const chartOpts = {
+  responsive: true,
+  animation: { duration: 700, easing: 'easeOutQuart' },
+  plugins: { legend: { display: false }, tooltip: { enabled: true } },
+};
 
-// ── Dashboard Charts ───────────────────────────────────────
+// ── Dashboard Charts ──────────────────────────────────────
 
-// Churn Rate by Contract Type
+// Contract type
 new Chart(document.getElementById('chartContract'), {
   type: 'bar',
   data: {
     labels: ['Monthly', 'Annual', 'Multi-year'],
     datasets: [{
-      label: 'Churn Rate (%)',
       data: [44.2, 21.8, 9.5],
-      backgroundColor: [DANGER, WARN, ACCENT2],
-      borderRadius: 6,
+      backgroundColor: [DANGER + 'cc', WARN + 'cc', ACCENT + 'cc'],
+      borderColor:     [DANGER,         WARN,         ACCENT],
+      borderWidth: 1,
+      borderRadius: 2,
       borderSkipped: false,
     }]
   },
   options: {
-    plugins: { legend: { display: false } },
+    ...chartOpts,
     scales: {
-      y: {
-        beginAtZero: true,
-        max: 60,
-        ticks: { callback: v => v + '%' },
-        grid: { color: '#2e3250' },
-      },
-      x: { grid: { display: false } }
+      y: { beginAtZero: true, max: 55, ticks: { callback: v => v + '%' }, grid: { color: GRID } },
+      x: { grid: { display: false } },
     },
-    animation: { duration: 900, easing: 'easeOutQuart' }
-  }
+  },
 });
 
-// Churn Rate by Industry
+// Industry
 new Chart(document.getElementById('chartIndustry'), {
   type: 'bar',
   data: {
     labels: ['Logistics', 'HR-Tech', 'Fintech', 'Healthcare', 'Retail'],
     datasets: [{
-      label: 'Churn Rate (%)',
       data: [24.8, 28.3, 22.1, 31.5, 33.2],
-      backgroundColor: ['#7c6cf8','#56cfb2','#f5a623','#f76b6b','#60a5fa'],
-      borderRadius: 6,
+      backgroundColor: ['#c9f531bb','#3dffa0bb','#ff9f2ebb','#ff5252bb','#60a5fabb'],
+      borderColor:     ['#c9f531',  '#3dffa0',  '#ff9f2e',  '#ff5252',  '#60a5fa'],
+      borderWidth: 1,
+      borderRadius: 2,
       borderSkipped: false,
     }]
   },
   options: {
-    plugins: { legend: { display: false } },
+    ...chartOpts,
     scales: {
-      y: {
-        beginAtZero: true,
-        max: 45,
-        ticks: { callback: v => v + '%' },
-        grid: { color: '#2e3250' },
-      },
-      x: { grid: { display: false } }
+      y: { beginAtZero: true, max: 45, ticks: { callback: v => v + '%' }, grid: { color: GRID } },
+      x: { grid: { display: false } },
     },
-    animation: { duration: 900, easing: 'easeOutQuart' }
-  }
+  },
 });
 
-// Tenure Buckets vs Churn Rate
+// Tenure
 new Chart(document.getElementById('chartTenure'), {
   type: 'bar',
   data: {
     labels: ['0–6 mo', '7–12 mo', '13–24 mo', '25–36 mo', '37–48 mo', '49–60 mo'],
     datasets: [
       {
-        label: 'Client Count',
+        label: 'Clients',
         data: [120, 180, 280, 210, 140, 70],
-        backgroundColor: ACCENT + '55',
-        borderColor: ACCENT,
+        backgroundColor: ACCENT + '22',
+        borderColor: ACCENT + '88',
         borderWidth: 1,
-        borderRadius: 4,
+        borderRadius: 2,
+        borderSkipped: false,
         yAxisID: 'yCount',
       },
       {
-        label: 'Churn Rate (%)',
+        label: 'Churn %',
         data: [52.1, 38.4, 24.7, 15.2, 10.3, 7.8],
         type: 'line',
         borderColor: DANGER,
-        backgroundColor: DANGER + '22',
+        backgroundColor: DANGER + '18',
         fill: true,
-        tension: 0.4,
-        pointRadius: 4,
+        tension: 0.45,
+        pointRadius: 3,
         pointBackgroundColor: DANGER,
+        pointBorderColor: '#090807',
+        pointBorderWidth: 1.5,
         yAxisID: 'yRate',
-      }
-    ]
+      },
+    ],
   },
   options: {
-    plugins: {
-      legend: { position: 'top', labels: { boxWidth: 12 } }
-    },
+    ...chartOpts,
+    plugins: { legend: { display: true, position: 'top',
+      labels: { color: MUTED, boxWidth: 10, padding: 14 } } },
     scales: {
       yCount: {
         position: 'left',
         beginAtZero: true,
-        title: { display: true, text: 'Clients', font: { size: 11 } },
-        grid: { color: '#2e3250' },
+        grid: { color: GRID },
+        title: { display: true, text: 'Clients', color: MUTED, font: { size: 10 } },
       },
       yRate: {
         position: 'right',
         beginAtZero: true,
         max: 70,
-        ticks: { callback: v => v + '%' },
-        title: { display: true, text: 'Churn %', font: { size: 11 } },
         grid: { display: false },
+        ticks: { callback: v => v + '%' },
+        title: { display: true, text: 'Churn %', color: MUTED, font: { size: 10 } },
       },
-      x: { grid: { display: false } }
+      x: { grid: { display: false } },
     },
-    animation: { duration: 900 }
-  }
+  },
 });
 
-// NPS Score vs Churn Rate
+// NPS vs Churn
 new Chart(document.getElementById('chartNPS'), {
   type: 'line',
   data: {
-    labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+    labels: ['0','1','2','3','4','5','6','7','8','9','10'],
     datasets: [{
-      label: 'Churn Rate (%)',
       data: [72.4, 68.1, 61.3, 53.8, 44.2, 34.6, 24.1, 16.8, 10.5, 6.2, 3.9],
-      borderColor: ACCENT2,
-      backgroundColor: ACCENT2 + '22',
+      borderColor: ACCENT,
+      backgroundColor: ACCENT + '14',
       fill: true,
       tension: 0.45,
-      pointRadius: 4,
-      pointBackgroundColor: ACCENT2,
-    }]
+      pointRadius: 3,
+      pointBackgroundColor: ACCENT,
+      pointBorderColor: '#090807',
+      pointBorderWidth: 1.5,
+    }],
   },
   options: {
-    plugins: { legend: { display: false } },
+    ...chartOpts,
     scales: {
       y: {
         beginAtZero: true,
-        max: 90,
+        max: 85,
         ticks: { callback: v => v + '%' },
-        grid: { color: '#2e3250' },
-        title: { display: true, text: 'Churn Rate', font: { size: 11 } },
+        grid: { color: GRID },
+        title: { display: true, text: 'Churn Rate', color: MUTED, font: { size: 10 } },
       },
       x: {
         grid: { display: false },
-        title: { display: true, text: 'NPS Score', font: { size: 11 } },
-      }
+        title: { display: true, text: 'NPS Score', color: MUTED, font: { size: 10 } },
+      },
     },
-    animation: { duration: 900 }
-  }
+  },
 });
 
-// ── Feature Importance Chart ────────────────────────────────
-let featureChartInit = false;
-
+// ── Feature Importance Chart ──────────────────────────────
+let featureChartReady = false;
 function initFeatureChart() {
-  featureChartInit = true;
-  const features = [
-    'Last Login Days',
-    'NPS Score',
-    'Support Tickets',
-    'Monthly Spend',
-    'Tenure',
-    'Product Modules',
-    'Num. of Users',
-    'Contract Type',
-    'Onboarding Done',
-    'Has CSM',
-    'Industry',
-  ];
-  const importances = [0.278, 0.192, 0.148, 0.091, 0.083, 0.071, 0.052, 0.038, 0.027, 0.011, 0.009];
-
-  // Sort descending
-  const sorted = features.map((f, i) => ({ f, v: importances[i] }))
-    .sort((a, b) => b.v - a.v);
+  featureChartReady = true;
+  const data = [
+    { label: 'Last Login Days',    val: 0.278 },
+    { label: 'NPS Score',          val: 0.192 },
+    { label: 'Support Tickets',    val: 0.148 },
+    { label: 'Monthly Spend',      val: 0.091 },
+    { label: 'Tenure',             val: 0.083 },
+    { label: 'Product Modules',    val: 0.071 },
+    { label: 'Num. of Users',      val: 0.052 },
+    { label: 'Contract Type',      val: 0.038 },
+    { label: 'Onboarding Done',    val: 0.027 },
+    { label: 'Has CSM',            val: 0.011 },
+    { label: 'Industry',           val: 0.009 },
+  ].sort((a, b) => b.val - a.val);
 
   new Chart(document.getElementById('chartFeatures'), {
     type: 'bar',
     data: {
-      labels: sorted.map(d => d.f),
+      labels: data.map(d => d.label),
       datasets: [{
-        label: 'Importance',
-        data: sorted.map(d => d.v),
-        backgroundColor: sorted.map((_, i) => {
-          const t = i / (sorted.length - 1);
-          return lerpColor('#7c6cf8', '#56cfb2', t);
-        }),
-        borderRadius: 5,
+        data: data.map(d => d.val),
+        backgroundColor: data.map((_, i) => lerpColor('#ff5252', '#c9f531', i / (data.length - 1)) + 'cc'),
+        borderColor:     data.map((_, i) => lerpColor('#ff5252', '#c9f531', i / (data.length - 1))),
+        borderWidth: 1,
+        borderRadius: 2,
         borderSkipped: false,
-      }]
+      }],
     },
     options: {
+      ...chartOpts,
       indexAxis: 'y',
-      plugins: { legend: { display: false } },
       scales: {
         x: {
           beginAtZero: true,
           ticks: { callback: v => (v * 100).toFixed(0) + '%' },
-          grid: { color: '#2e3250' },
+          grid: { color: GRID },
         },
-        y: { grid: { display: false } }
+        y: { grid: { display: false } },
       },
-      animation: { duration: 1000, easing: 'easeOutQuart' }
-    }
+    },
   });
 }
 
 function lerpColor(a, b, t) {
   const ah = parseInt(a.replace('#',''), 16);
   const bh = parseInt(b.replace('#',''), 16);
-  const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
-  const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
-  const rr = Math.round(ar + (br - ar) * t);
-  const rg = Math.round(ag + (bg - ag) * t);
-  const rb = Math.round(ab + (bb - ab) * t);
-  return `rgb(${rr},${rg},${rb})`;
+  const ar = (ah>>16)&0xff, ag = (ah>>8)&0xff, ab = ah&0xff;
+  const br = (bh>>16)&0xff, bg = (bh>>8)&0xff, bb = bh&0xff;
+  return `#${[
+    Math.round(ar+(br-ar)*t),
+    Math.round(ag+(bg-ag)*t),
+    Math.round(ab+(bb-ab)*t),
+  ].map(v => v.toString(16).padStart(2,'0')).join('')}`;
 }
 
-// ── Prediction Logic ───────────────────────────────────────
-/*
-  Mirrors the churn scoring in generate_data.py:
-    tenure < 6      → +2
-    tickets > 10    → +2
-    lastLogin > 60  → +3   (strongest signal)
-    nps < 5         → +2
-    contract=Monthly→ +1
-    onboarding=No   → +2
-    modules < 3     → +1
-    csm=No          → +1
-  max = 14
-*/
-function predictChurn(f) {
-  let score = 0;
-  if (f.tenure < 6)              score += 2;
-  if (f.tickets > 10)            score += 2;
-  if (f.lastLogin > 60)          score += 3;
-  if (f.nps < 5)                 score += 2;
-  if (f.contract === 'Monthly')  score += 1;
-  if (!f.onboarding)             score += 2;
-  if (f.modules < 3)             score += 1;
-  if (!f.csm)                    score += 1;
-
-  // Smooth probability with a slight sigmoid-like curve so mid-range
-  // scores don't feel too binary
-  const raw = score / 14;
-  return Math.round(sigmoidScale(raw) * 100);
-}
-
-function sigmoidScale(x) {
-  // Maps [0,1] → [0,1] with gentle S-curve
-  return 1 / (1 + Math.exp(-10 * (x - 0.45)));
-}
-
-let gaugeChart = null;
-
-function runPrediction() {
-  const f = {
+// ── Live Prediction ───────────────────────────────────────
+function getInputs() {
+  return {
     tenure:    +document.getElementById('tenure').value,
     spend:     +document.getElementById('spend').value,
     users:     +document.getElementById('users').value,
@@ -291,100 +244,121 @@ function runPrediction() {
     lastLogin: +document.getElementById('lastlogin').value,
     nps:       +document.getElementById('nps').value,
     contract:  document.getElementById('contract').value,
-    industry:  document.getElementById('industry').value,
     onboarding: document.querySelector('input[name="onboarding"]:checked').value === 'yes',
     csm:        document.querySelector('input[name="csm"]:checked').value === 'yes',
   };
+}
 
-  const pct = predictChurn(f);
+function updateSliderDisplays(f) {
+  document.getElementById('v-tenure').innerHTML   = `${f.tenure} <small>mo</small>`;
+  document.getElementById('v-spend').textContent   = `€${f.spend.toLocaleString()}`;
+  document.getElementById('v-users').textContent   = f.users;
+  document.getElementById('v-tickets').textContent = f.tickets;
+  document.getElementById('v-modules').textContent = f.modules;
+  document.getElementById('v-lastlogin').innerHTML = `${f.lastLogin} <small>days ago</small>`;
+  document.getElementById('v-nps').innerHTML       = `${f.nps} <small>/ 10</small>`;
+}
 
-  // Risk level
-  let riskClass, riskText, actions;
-  if (pct >= 70) {
-    riskClass = 'risk-high';
-    riskText  = '🔴 HIGH RISK';
-    actions   = [
-      '📞 Schedule an executive business review within 48 hours',
-      '🔧 Assign a senior CSM to audit product adoption blockers',
-      '💡 Offer a custom success plan or usage incentive',
-    ];
-  } else if (pct >= 40) {
-    riskClass = 'risk-medium';
-    riskText  = '🟠 MEDIUM RISK';
-    actions   = [
-      '📧 Send a personalised check-in email from the account team',
-      '📊 Share a health dashboard highlighting unused features',
-      '🎯 Propose a QBR to re-align on business outcomes',
-    ];
-  } else {
-    riskClass = 'risk-low';
-    riskText  = '🟢 LOW RISK';
-    actions   = [
-      '🤝 Explore upsell or expansion opportunities',
-      '⭐ Invite to reference customer or case-study programme',
-      '🔄 Schedule a regular touchpoint to maintain engagement',
-    ];
-  }
+function scoreChurn(f) {
+  let score = 0;
+  if (f.tenure < 6)             score += 2;
+  if (f.tickets > 10)           score += 2;
+  if (f.lastLogin > 60)         score += 3;
+  if (f.nps < 5)                score += 2;
+  if (f.contract === 'Monthly') score += 1;
+  if (!f.onboarding)            score += 2;
+  if (f.modules < 3)            score += 1;
+  if (!f.csm)                   score += 1;
+  const raw = score / 14;
+  // sigmoid-like smoothing
+  return Math.round((1 / (1 + Math.exp(-10 * (raw - 0.44)))) * 100);
+}
 
-  // Show result panel
-  document.querySelector('.result-placeholder').classList.add('hidden');
-  const rc = document.getElementById('result-content');
-  rc.classList.remove('hidden');
+function getRiskFactors(f) {
+  const rows = [];
+  rows.push({ label: 'Last login', val: f.lastLogin + ' days ago', bad: f.lastLogin > 60 });
+  rows.push({ label: 'NPS Score',  val: f.nps + ' / 10',           bad: f.nps < 5 });
+  rows.push({ label: 'Support tickets (90d)', val: f.tickets,      bad: f.tickets > 10 });
+  rows.push({ label: 'Onboarding', val: f.onboarding ? 'Done' : 'Incomplete', bad: !f.onboarding });
+  rows.push({ label: 'Contract',   val: f.contract,                 bad: f.contract === 'Monthly' });
+  rows.push({ label: 'CSM assigned', val: f.csm ? 'Yes' : 'No',   bad: !f.csm });
+  return rows;
+}
 
-  document.getElementById('result-label').textContent  = riskText;
-  document.getElementById('result-label').className    = 'result-risk-label ' + riskClass;
-  document.getElementById('result-percent').textContent = pct + '%';
+function getActions(pct) {
+  if (pct >= 70) return [
+    { icon: '🚨', text: 'Schedule an executive business review within 48 hours' },
+    { icon: '🔧', text: 'Assign senior CSM to audit product adoption blockers' },
+    { icon: '💡', text: 'Offer a custom success plan or meaningful incentive' },
+  ];
+  if (pct >= 40) return [
+    { icon: '📧', text: 'Send a personalised check-in from the account team' },
+    { icon: '📊', text: 'Share a health dashboard highlighting unused features' },
+    { icon: '🎯', text: 'Propose a QBR to re-align on business outcomes' },
+  ];
+  return [
+    { icon: '🤝', text: 'Explore upsell or expansion opportunities' },
+    { icon: '⭐', text: 'Invite to reference customer or case-study programme' },
+    { icon: '🔄', text: 'Schedule a regular touchpoint to maintain momentum' },
+  ];
+}
 
-  const color = pct >= 70 ? DANGER : pct >= 40 ? WARN : ACCENT2;
-  document.getElementById('result-percent').style.color = color;
+function updatePrediction() {
+  const f = getInputs();
+  updateSliderDisplays(f);
+  const pct = scoreChurn(f);
+
+  const riskClass = pct >= 70 ? 'high' : pct >= 40 ? 'med' : 'low';
+  const riskText  = pct >= 70 ? '⬤ High Risk' : pct >= 40 ? '◆ Medium Risk' : '● Low Risk';
+  const color     = pct >= 70 ? DANGER : pct >= 40 ? WARN : SUCCESS;
+
+  // Label
+  const lbl = document.getElementById('risk-level-label');
+  lbl.textContent = riskText;
+  lbl.className   = 'risk-level-label ' + riskClass;
+
+  // Percentage
+  const pctEl = document.getElementById('risk-pct');
+  pctEl.textContent = pct + '%';
+  pctEl.className   = 'risk-pct ' + riskClass;
+
+  // Thermometer
+  const fill = document.getElementById('thermo-fill');
+  fill.style.height     = Math.min(pct, 100) + '%';
+  fill.style.background = color;
+  fill.style.boxShadow  = `0 0 12px ${color}55`;
+
+  // Risk factors
+  const factors = getRiskFactors(f);
+  document.getElementById('risk-factors').innerHTML = factors.map(r => `
+    <div class="risk-factor-row">
+      <span class="rf-label">${r.label}</span>
+      <span class="rf-badge ${r.bad ? 'bad' : 'ok'}">${r.val}</span>
+    </div>
+  `).join('');
 
   // Actions
-  const box = document.getElementById('actions-box');
-  box.innerHTML = `<h5>Recommended Actions</h5><ul>${actions.map(a => `<li>✦ <span>${a}</span></li>`).join('')}</ul>`;
-
-  // Gauge
-  drawGauge(pct, color);
+  const actions = getActions(pct);
+  document.getElementById('actions-section').innerHTML = `
+    <div class="actions-title">Recommended Actions</div>
+    ${actions.map(a => `
+      <div class="action-item">
+        <span class="action-icon">${a.icon}</span>
+        <span>${a.text}</span>
+      </div>
+    `).join('')}
+  `;
 }
 
-function drawGauge(pct, color) {
-  const ctx = document.getElementById('gaugeChart').getContext('2d');
+// ── Wire up all inputs ────────────────────────────────────
+['tenure','spend','users','tickets','modules','lastlogin','nps'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updatePrediction);
+});
+document.getElementById('contract').addEventListener('change', updatePrediction);
+document.getElementById('industry').addEventListener('change', updatePrediction);
+document.querySelectorAll('input[name="onboarding"], input[name="csm"]').forEach(el => {
+  el.addEventListener('change', updatePrediction);
+});
 
-  if (gaugeChart) { gaugeChart.destroy(); }
-
-  gaugeChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: [pct, 100 - pct],
-        backgroundColor: [color, SURFACE2],
-        borderWidth: 0,
-        circumference: 180,
-        rotation: 270,
-      }]
-    },
-    options: {
-      cutout: '70%',
-      responsive: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false },
-      },
-      animation: { animateRotate: true, duration: 700 }
-    },
-    plugins: [{
-      id: 'gaugeLabel',
-      afterDraw(chart) {
-        const { ctx, chartArea: { left, right, top, bottom } } = chart;
-        const cx = (left + right) / 2;
-        const cy = bottom - 8;
-        ctx.save();
-        ctx.font = 'bold 22px Segoe UI, sans-serif';
-        ctx.fillStyle = color;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText(pct + '%', cx, cy);
-        ctx.restore();
-      }
-    }]
-  });
-}
+// Run once on load
+updatePrediction();

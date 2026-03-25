@@ -3,265 +3,348 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>B2B SaaS Churn Predictor</title>
+  <title>Churn Intelligence — B2B SaaS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Header -->
+
+  <!-- Grain overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ── Header ── -->
   <header>
     <div class="header-inner">
-      <div class="logo-area">
-        <span class="logo-icon">📊</span>
-        <div>
-          <h1>B2B SaaS Churn Predictor</h1>
-          <p class="tagline">Identify at-risk clients before they leave</p>
-        </div>
+      <div class="wordmark">
+        <span class="dot"></span>
+        <span class="brand">Churn<em>IQ</em></span>
       </div>
-      <nav>
-        <button class="nav-btn active" data-tab="dashboard">📊 Dashboard</button>
-        <button class="nav-btn" data-tab="predict">🔮 Predict Churn Risk</button>
-        <button class="nav-btn" data-tab="insights">📈 Feature Insights</button>
+
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="dashboard">
+          <span class="tab-num">01</span> Dashboard
+        </button>
+        <button class="tab-btn" data-tab="predict">
+          <span class="tab-num">02</span> Predict
+        </button>
+        <button class="tab-btn" data-tab="insights">
+          <span class="tab-num">03</span> Insights
+        </button>
       </nav>
+
+      <div class="header-meta">
+        <span class="live-badge"><span class="pulse"></span> 1,000 accounts</span>
+      </div>
     </div>
   </header>
 
   <main>
-    <!-- ─────────────── DASHBOARD ─────────────── -->
-    <section id="tab-dashboard" class="tab-section active">
-      <div class="section-title">
-        <h2>Portfolio Overview</h2>
-        <p>Analytics across 1,000 synthetic B2B SaaS client accounts</p>
+
+    <!-- ══════════════ 01 DASHBOARD ══════════════ -->
+    <section id="tab-dashboard" class="tab active">
+
+      <div class="page-header">
+        <h2 class="page-title">Portfolio <em>Overview</em></h2>
+        <p class="page-sub">Synthetic B2B SaaS dataset · Random Forest · ~82% accuracy</p>
       </div>
 
-      <!-- KPI Cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-value">1,000</div>
+      <!-- KPI Strip -->
+      <div class="kpi-strip">
+        <div class="kpi">
+          <div class="kpi-num">1,000</div>
           <div class="kpi-label">Total Clients</div>
         </div>
-        <div class="kpi-card warn">
-          <div class="kpi-value">27.4%</div>
+        <div class="kpi-divider"></div>
+        <div class="kpi">
+          <div class="kpi-num danger">27.4<span class="kpi-unit">%</span></div>
           <div class="kpi-label">Churn Rate</div>
         </div>
-        <div class="kpi-card">
-          <div class="kpi-value">24.3 mo</div>
+        <div class="kpi-divider"></div>
+        <div class="kpi">
+          <div class="kpi-num">24.3<span class="kpi-unit">mo</span></div>
           <div class="kpi-label">Avg. Tenure</div>
         </div>
-        <div class="kpi-card success">
-          <div class="kpi-value">81.6%</div>
+        <div class="kpi-divider"></div>
+        <div class="kpi">
+          <div class="kpi-num accent">81.6<span class="kpi-unit">%</span></div>
           <div class="kpi-label">Model Accuracy</div>
         </div>
       </div>
 
-      <!-- Charts Row 1 -->
+      <!-- Charts -->
       <div class="chart-grid">
-        <div class="chart-card">
-          <h3>Churn Rate by Contract Type</h3>
-          <canvas id="chartContract"></canvas>
-        </div>
-        <div class="chart-card">
-          <h3>Churn Rate by Industry</h3>
-          <canvas id="chartIndustry"></canvas>
-        </div>
-      </div>
 
-      <!-- Charts Row 2 -->
-      <div class="chart-grid">
-        <div class="chart-card">
-          <h3>Tenure vs Churn Risk Distribution</h3>
-          <canvas id="chartTenure"></canvas>
+        <div class="chart-block">
+          <div class="chart-header">
+            <span class="chart-tag">Contract</span>
+            <h3>Churn by Contract Type</h3>
+          </div>
+          <canvas id="chartContract" height="220"></canvas>
         </div>
-        <div class="chart-card">
-          <h3>NPS Score vs Churn Rate</h3>
-          <canvas id="chartNPS"></canvas>
+
+        <div class="chart-block">
+          <div class="chart-header">
+            <span class="chart-tag">Industry</span>
+            <h3>Churn by Industry</h3>
+          </div>
+          <canvas id="chartIndustry" height="220"></canvas>
         </div>
+
+        <div class="chart-block">
+          <div class="chart-header">
+            <span class="chart-tag">Tenure</span>
+            <h3>Tenure vs Churn Distribution</h3>
+          </div>
+          <canvas id="chartTenure" height="220"></canvas>
+        </div>
+
+        <div class="chart-block">
+          <div class="chart-header">
+            <span class="chart-tag">Sentiment</span>
+            <h3>NPS Score vs Churn Rate</h3>
+          </div>
+          <canvas id="chartNPS" height="220"></canvas>
+        </div>
+
       </div>
     </section>
 
-    <!-- ─────────────── PREDICT ─────────────── -->
-    <section id="tab-predict" class="tab-section">
-      <div class="section-title">
-        <h2>Predict Client Churn Risk</h2>
-        <p>Enter a client profile to get an instant churn probability estimate</p>
+    <!-- ══════════════ 02 PREDICT ══════════════ -->
+    <section id="tab-predict" class="tab">
+
+      <div class="page-header">
+        <h2 class="page-title">Risk <em>Predictor</em></h2>
+        <p class="page-sub">Adjust any signal — risk updates instantly</p>
       </div>
 
       <div class="predict-layout">
-        <!-- Input Form -->
-        <div class="form-card">
-          <div class="form-columns">
-            <!-- Column 1 -->
-            <div class="form-col">
-              <h4>Account Metrics</h4>
 
-              <label>Tenure (months)
-                <div class="slider-row">
-                  <input type="range" id="tenure" min="1" max="60" value="12" oninput="syncVal(this,'tenure-val')" />
-                  <span class="slider-val" id="tenure-val">12</span>
-                </div>
-              </label>
+        <!-- Input Panel -->
+        <div class="input-panel">
 
-              <label>Monthly Spend (€)
-                <div class="slider-row">
-                  <input type="range" id="spend" min="500" max="10000" step="100" value="3000" oninput="syncVal(this,'spend-val')" />
-                  <span class="slider-val" id="spend-val">3000</span>
-                </div>
-              </label>
+          <div class="input-group">
+            <div class="group-label">Account Metrics</div>
 
-              <label>Number of Users
-                <div class="slider-row">
-                  <input type="range" id="users" min="1" max="500" value="50" oninput="syncVal(this,'users-val')" />
-                  <span class="slider-val" id="users-val">50</span>
-                </div>
-              </label>
-
-              <label>Support Tickets (last 90d)
-                <div class="slider-row">
-                  <input type="range" id="tickets" min="0" max="30" value="3" oninput="syncVal(this,'tickets-val')" />
-                  <span class="slider-val" id="tickets-val">3</span>
-                </div>
-              </label>
+            <div class="field">
+              <div class="field-top">
+                <label>Tenure</label>
+                <span class="field-val mono" id="v-tenure">12 <small>mo</small></span>
+              </div>
+              <input type="range" id="tenure" min="1" max="60" value="12" />
+              <div class="field-range-labels"><span>1 mo</span><span>60 mo</span></div>
             </div>
 
-            <!-- Column 2 -->
-            <div class="form-col">
-              <h4>Engagement Signals</h4>
-
-              <label>Product Modules Used
-                <div class="slider-row">
-                  <input type="range" id="modules" min="1" max="10" value="5" oninput="syncVal(this,'modules-val')" />
-                  <span class="slider-val" id="modules-val">5</span>
-                </div>
-              </label>
-
-              <label>Last Login (days ago)
-                <div class="slider-row">
-                  <input type="range" id="lastlogin" min="1" max="120" value="7" oninput="syncVal(this,'lastlogin-val')" />
-                  <span class="slider-val" id="lastlogin-val">7</span>
-                </div>
-              </label>
-
-              <label>NPS Score (0–10)
-                <div class="slider-row">
-                  <input type="range" id="nps" min="0" max="10" value="7" oninput="syncVal(this,'nps-val')" />
-                  <span class="slider-val" id="nps-val">7</span>
-                </div>
-              </label>
-
-              <label>Contract Type
-                <select id="contract">
-                  <option value="Monthly">Monthly</option>
-                  <option value="Annual" selected>Annual</option>
-                  <option value="Multi-year">Multi-year</option>
-                </select>
-              </label>
+            <div class="field">
+              <div class="field-top">
+                <label>Monthly Spend</label>
+                <span class="field-val mono" id="v-spend">€3,000</span>
+              </div>
+              <input type="range" id="spend" min="500" max="10000" step="100" value="3000" />
+              <div class="field-range-labels"><span>€500</span><span>€10k</span></div>
             </div>
 
-            <!-- Column 3 -->
-            <div class="form-col">
-              <h4>Account Structure</h4>
-
-              <label>Industry
-                <select id="industry">
-                  <option value="Logistics">Logistics</option>
-                  <option value="HR-Tech" selected>HR-Tech</option>
-                  <option value="Fintech">Fintech</option>
-                  <option value="Healthcare">Healthcare</option>
-                  <option value="Retail">Retail</option>
-                </select>
-              </label>
-
-              <label>Onboarding Completed?</label>
-              <div class="radio-group">
-                <label class="radio-label">
-                  <input type="radio" name="onboarding" value="yes" checked /> Yes
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="onboarding" value="no" /> No
-                </label>
+            <div class="field">
+              <div class="field-top">
+                <label>Number of Users</label>
+                <span class="field-val mono" id="v-users">50</span>
               </div>
-
-              <label>Has Dedicated CSM?</label>
-              <div class="radio-group">
-                <label class="radio-label">
-                  <input type="radio" name="csm" value="yes" checked /> Yes
-                </label>
-                <label class="radio-label">
-                  <input type="radio" name="csm" value="no" /> No
-                </label>
-              </div>
-
-              <button class="predict-btn" onclick="runPrediction()">🔮 Predict Churn Risk</button>
+              <input type="range" id="users" min="1" max="500" value="50" />
+              <div class="field-range-labels"><span>1</span><span>500</span></div>
             </div>
           </div>
+
+          <div class="input-group">
+            <div class="group-label">Engagement Signals</div>
+
+            <div class="field">
+              <div class="field-top">
+                <label>Support Tickets <small>(last 90d)</small></label>
+                <span class="field-val mono" id="v-tickets">3</span>
+              </div>
+              <input type="range" id="tickets" min="0" max="30" value="3" />
+              <div class="field-range-labels"><span>0</span><span>30</span></div>
+            </div>
+
+            <div class="field">
+              <div class="field-top">
+                <label>Product Modules Used</label>
+                <span class="field-val mono" id="v-modules">5</span>
+              </div>
+              <input type="range" id="modules" min="1" max="10" value="5" />
+              <div class="field-range-labels"><span>1</span><span>10</span></div>
+            </div>
+
+            <div class="field">
+              <div class="field-top">
+                <label>Last Login</label>
+                <span class="field-val mono" id="v-lastlogin">7 <small>days ago</small></span>
+              </div>
+              <input type="range" id="lastlogin" min="1" max="120" value="7" />
+              <div class="field-range-labels"><span>1d</span><span>120d</span></div>
+            </div>
+
+            <div class="field">
+              <div class="field-top">
+                <label>NPS Score</label>
+                <span class="field-val mono" id="v-nps">7 <small>/ 10</small></span>
+              </div>
+              <input type="range" id="nps" min="0" max="10" value="7" />
+              <div class="field-range-labels"><span>0</span><span>10</span></div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="group-label">Account Structure</div>
+
+            <div class="field select-field">
+              <label>Contract Type</label>
+              <select id="contract">
+                <option value="Monthly">Monthly</option>
+                <option value="Annual" selected>Annual</option>
+                <option value="Multi-year">Multi-year</option>
+              </select>
+            </div>
+
+            <div class="field select-field">
+              <label>Industry</label>
+              <select id="industry">
+                <option value="Logistics">Logistics</option>
+                <option value="HR-Tech" selected>HR-Tech</option>
+                <option value="Fintech">Fintech</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Retail">Retail</option>
+              </select>
+            </div>
+
+            <div class="field toggle-field">
+              <label>Onboarding Completed?</label>
+              <div class="toggle-group">
+                <label class="toggle-opt">
+                  <input type="radio" name="onboarding" value="yes" checked />
+                  <span>Yes</span>
+                </label>
+                <label class="toggle-opt">
+                  <input type="radio" name="onboarding" value="no" />
+                  <span>No</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field toggle-field">
+              <label>Dedicated CSM?</label>
+              <div class="toggle-group">
+                <label class="toggle-opt">
+                  <input type="radio" name="csm" value="yes" checked />
+                  <span>Yes</span>
+                </label>
+                <label class="toggle-opt">
+                  <input type="radio" name="csm" value="no" />
+                  <span>No</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- Result Panel -->
-        <div class="result-card" id="result-card">
-          <div class="result-placeholder">
-            <span>👈</span>
-            <p>Fill in the client profile and click <strong>Predict Churn Risk</strong></p>
-          </div>
+        <div class="result-panel">
+          <div class="result-inner">
 
-          <div class="result-content hidden" id="result-content">
-            <div class="result-risk-label" id="result-label"></div>
-            <div class="result-percent" id="result-percent"></div>
-            <p class="result-sub">Churn Probability</p>
+            <!-- Risk level label -->
+            <div class="risk-level-label" id="risk-level-label">—</div>
 
-            <!-- Gauge -->
-            <div class="gauge-wrap">
-              <canvas id="gaugeChart" width="260" height="160"></canvas>
+            <!-- Big percentage -->
+            <div class="risk-pct" id="risk-pct">—</div>
+            <div class="risk-pct-sub">churn probability</div>
+
+            <!-- Vertical thermometer bar -->
+            <div class="thermo-wrap">
+              <div class="thermo-scale">
+                <span>100%</span>
+                <span>70%</span>
+                <span>40%</span>
+                <span>0%</span>
+              </div>
+              <div class="thermo-track">
+                <div class="thermo-fill" id="thermo-fill"></div>
+                <div class="thermo-line high" style="bottom:70%">
+                  <span>HIGH</span>
+                </div>
+                <div class="thermo-line med" style="bottom:40%">
+                  <span>MED</span>
+                </div>
+              </div>
             </div>
 
-            <div class="actions-box" id="actions-box"></div>
+            <!-- Top risk factors -->
+            <div class="risk-factors" id="risk-factors"></div>
+
+            <!-- Actions -->
+            <div class="actions-section" id="actions-section"></div>
+
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- ─────────────── INSIGHTS ─────────────── -->
-    <section id="tab-insights" class="tab-section">
-      <div class="section-title">
-        <h2>Feature Importance Insights</h2>
-        <p>Which signals matter most in predicting B2B SaaS churn</p>
+    <!-- ══════════════ 03 INSIGHTS ══════════════ -->
+    <section id="tab-insights" class="tab">
+
+      <div class="page-header">
+        <h2 class="page-title">Feature <em>Insights</em></h2>
+        <p class="page-sub">What drives churn most — Random Forest feature importance</p>
       </div>
 
       <div class="insights-layout">
-        <div class="chart-card wide">
-          <h3>Feature Importance (Random Forest)</h3>
-          <canvas id="chartFeatures"></canvas>
+
+        <div class="chart-block full">
+          <div class="chart-header">
+            <span class="chart-tag">Model</span>
+            <h3>Feature Importance Ranking</h3>
+          </div>
+          <canvas id="chartFeatures" height="320"></canvas>
         </div>
 
-        <div class="takeaways">
-          <div class="takeaway-card">
-            <div class="takeaway-icon">🔴</div>
-            <div>
-              <strong>Disengagement is the #1 signal.</strong>
-              <p>Last Login Days is the strongest predictor. Clients who haven't logged in for 60+ days are 3× more likely to churn — reach out before they go dark.</p>
+        <div class="takeaways-row">
+          <div class="takeaway">
+            <div class="takeaway-num">01</div>
+            <div class="takeaway-body">
+              <strong>Disengagement kills silently.</strong>
+              <p>Last Login Days is the #1 predictor. Clients who haven't logged in for 60+ days are 3× more likely to churn — reach out before they go fully dark.</p>
             </div>
           </div>
-          <div class="takeaway-card">
-            <div class="takeaway-icon">🟠</div>
-            <div>
-              <strong>NPS + support tickets reveal sentiment.</strong>
-              <p>Low NPS scores and a spike in support tickets together signal frustration. A client scoring NPS &lt; 5 with &gt;10 tickets is in critical risk territory.</p>
+          <div class="takeaway">
+            <div class="takeaway-num">02</div>
+            <div class="takeaway-body">
+              <strong>NPS is a leading indicator, not a lagging one.</strong>
+              <p>An NPS below 5, combined with rising support tickets, is a reliable early signal — not a post-mortem. Treat it as an alert, not a retrospective.</p>
             </div>
           </div>
-          <div class="takeaway-card">
-            <div class="takeaway-icon">🟢</div>
-            <div>
-              <strong>Onboarding and CSM assignment are protective.</strong>
-              <p>Clients with completed onboarding and a dedicated CSM churn at nearly half the rate. Investing in early success pays off long-term.</p>
+          <div class="takeaway">
+            <div class="takeaway-num">03</div>
+            <div class="takeaway-body">
+              <strong>Onboarding and CSM assignment are your safety net.</strong>
+              <p>Clients with complete onboarding and a dedicated CSM churn at nearly half the rate. The ROI on early investment in success pays compounding dividends.</p>
             </div>
           </div>
         </div>
+
       </div>
     </section>
+
   </main>
 
   <!-- Footer -->
   <footer>
-    <p>Built by <a href="https://www.linkedin.com/in/shashank-tripathi-84b14b195/" target="_blank">Shashank Tripathi</a> · MiM Student @ ESCP Business School · Inspired by 2 years in enterprise account management</p>
+    <div class="footer-inner">
+      <span>Built by <a href="https://www.linkedin.com/in/shashank-tripathi-84b14b195/" target="_blank">Shashank Tripathi</a> — MiM @ ESCP Business School</span>
+      <span class="footer-note">Grounded in 2 years of enterprise account management at Shipsy &amp; ZingHR</span>
+    </div>
   </footer>
 
   <script src="app.js"></script>
