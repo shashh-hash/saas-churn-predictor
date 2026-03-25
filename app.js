@@ -260,18 +260,49 @@ function updateSliderDisplays(f) {
 }
 
 function scoreChurn(f) {
-  let score = 0;
-  if (f.tenure < 6)             score += 2;
-  if (f.tickets > 10)           score += 2;
-  if (f.lastLogin > 60)         score += 3;
-  if (f.nps < 5)                score += 2;
-  if (f.contract === 'Monthly') score += 1;
-  if (!f.onboarding)            score += 2;
-  if (f.modules < 3)            score += 1;
-  if (!f.csm)                   score += 1;
-  const raw = score / 14;
-  // sigmoid-like smoothing
-  return Math.round((1 / (1 + Math.exp(-10 * (raw - 0.44)))) * 100);
+  // Normalize features so 1 = highest churn risk, 0 = lowest churn risk
+  const nLastLogin = f.lastLogin / 120;
+  const nNPS       = (10 - f.nps) / 10;
+  const nTickets   = f.tickets / 30;
+  const nSpend     = (10000 - f.spend) / 9500;
+  const nTenure    = (60 - f.tenure) / 59;
+  const nModules   = (10 - f.modules) / 9;
+  const nUsers     = (500 - f.users) / 499;
+  
+  let nContract = 0.5; // Annual
+  if (f.contract === 'Monthly') nContract = 1.0;
+  else if (f.contract === 'Multi-year') nContract = 0.0;
+  
+  const nOnboarding = f.onboarding ? 0.0 : 1.0;
+  const nCSM        = f.csm ? 0.0 : 1.0;
+  
+  let nIndustry = 0.5;
+  if (f.industry === 'Retail') nIndustry = 1.0;
+  else if (f.industry === 'Healthcare') nIndustry = 0.8;
+  else if (f.industry === 'Logistics') nIndustry = 0.6;
+  else if (f.industry === 'Fintech') nIndustry = 0.3;
+  else if (f.industry === 'HR-Tech') nIndustry = 0.0;
+
+  // Weighted sum using exact feature importance mapped in the Insights tab
+  const z_raw = 
+    (nLastLogin * 0.278) +
+    (nNPS       * 0.192) +
+    (nTickets   * 0.148) +
+    (nSpend     * 0.091) +
+    (nTenure    * 0.083) +
+    (nModules   * 0.071) +
+    (nUsers     * 0.052) +
+    (nContract  * 0.038) +
+    (nOnboarding* 0.027) +
+    (nCSM       * 0.011) +
+    (nIndustry  * 0.009);
+
+  // Map the raw linear sum to a probability using a sigmoid S-curve.
+  // We set the inflection point at 0.45 so average clients get ~10-25% risk.
+  const score = Math.round(100 / (1 + Math.exp(-12 * (z_raw - 0.45))));
+  
+  // Bound it just in case between 1 and 99
+  return Math.max(1, Math.min(99, score));
 }
 
 function getRiskFactors(f) {

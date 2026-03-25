@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Churn Intelligence — B2B SaaS</title>
+  <title>ChurnIQ — B2B SaaS Churn Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -19,43 +19,33 @@
   <header>
     <div class="header-inner">
       <div class="wordmark">
-        <span class="dot"></span>
-        <span class="brand">Churn<em>IQ</em></span>
+        <div class="dot"></div>
+        <div class="brand">Churn<em>IQ</em></div>
       </div>
-
       <nav class="tab-nav">
-        <button class="tab-btn active" data-tab="dashboard">
-          <span class="tab-num">01</span> Dashboard
-        </button>
-        <button class="tab-btn" data-tab="predict">
-          <span class="tab-num">02</span> Predict
-        </button>
-        <button class="tab-btn" data-tab="insights">
-          <span class="tab-num">03</span> Insights
-        </button>
+        <button class="tab-btn active" data-tab="dashboard"><span class="tab-num">01</span> Dashboard</button>
+        <button class="tab-btn" data-tab="predict"><span class="tab-num">02</span> Predict</button>
+        <button class="tab-btn" data-tab="insights"><span class="tab-num">03</span> Insights</button>
       </nav>
-
-      <div class="header-meta">
-        <span class="live-badge"><span class="pulse"></span> 1,000 accounts</span>
+      <div class="live-badge">
+        <div class="pulse"></div> Live Demo
       </div>
     </div>
   </header>
 
   <main>
 
-    <!-- ══════════════ 01 DASHBOARD ══════════════ -->
+    <!-- ══════════ DASHBOARD ══════════ -->
     <section id="tab-dashboard" class="tab active">
-
       <div class="page-header">
-        <h2 class="page-title">Portfolio <em>Overview</em></h2>
-        <p class="page-sub">Synthetic B2B SaaS dataset · Random Forest · ~82% accuracy</p>
+        <h1 class="page-title">Portfolio <em>Overview</em></h1>
+        <p class="page-sub">Synthetic B2B SaaS dataset · 1,000 accounts · Random Forest Classifier</p>
       </div>
 
-      <!-- KPI Strip -->
       <div class="kpi-strip">
         <div class="kpi">
           <div class="kpi-num">1,000</div>
-          <div class="kpi-label">Total Clients</div>
+          <div class="kpi-label">Clients</div>
         </div>
         <div class="kpi-divider"></div>
         <div class="kpi">
@@ -64,77 +54,71 @@
         </div>
         <div class="kpi-divider"></div>
         <div class="kpi">
-          <div class="kpi-num">24.3<span class="kpi-unit">mo</span></div>
-          <div class="kpi-label">Avg. Tenure</div>
+          <div class="kpi-num">24.3<span class="kpi-unit">m</span></div>
+          <div class="kpi-label">Avg Tenure</div>
         </div>
         <div class="kpi-divider"></div>
         <div class="kpi">
           <div class="kpi-num accent">81.6<span class="kpi-unit">%</span></div>
-          <div class="kpi-label">Model Accuracy</div>
+          <div class="kpi-label">Model Acc.</div>
         </div>
       </div>
 
-      <!-- Charts -->
       <div class="chart-grid">
-
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Contract</span>
-            <h3>Churn by Contract Type</h3>
+            <span class="chart-tag">Dist</span>
+            <h3>By Contract</h3>
           </div>
-          <canvas id="chartContract" height="220"></canvas>
+          <canvas id="chartContract"></canvas>
         </div>
-
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Industry</span>
-            <h3>Churn by Industry</h3>
+            <span class="chart-tag">Dist</span>
+            <h3>By Industry</h3>
           </div>
-          <canvas id="chartIndustry" height="220"></canvas>
+          <canvas id="chartIndustry"></canvas>
         </div>
-
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Tenure</span>
-            <h3>Tenure vs Churn Distribution</h3>
+            <span class="chart-tag">Trend</span>
+            <h3>Tenure vs Churn</h3>
           </div>
-          <canvas id="chartTenure" height="220"></canvas>
+          <canvas id="chartTenure"></canvas>
         </div>
-
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Sentiment</span>
-            <h3>NPS Score vs Churn Rate</h3>
+            <span class="chart-tag">Trend</span>
+            <h3>NPS vs Churn</h3>
           </div>
-          <canvas id="chartNPS" height="220"></canvas>
+          <canvas id="chartNPS"></canvas>
         </div>
-
       </div>
     </section>
 
-    <!-- ══════════════ 02 PREDICT ══════════════ -->
+    <!-- ══════════ PREDICT ══════════ -->
     <section id="tab-predict" class="tab">
-
       <div class="page-header">
-        <h2 class="page-title">Risk <em>Predictor</em></h2>
-        <p class="page-sub">Adjust any signal — risk updates instantly</p>
+        <h1 class="page-title">Risk <em>Predictor</em></h1>
+        <p class="page-sub">Move any slider — the risk score updates live.</p>
       </div>
 
       <div class="predict-layout">
-
         <!-- Input Panel -->
         <div class="input-panel">
-
+          
           <div class="input-group">
-            <div class="group-label">Account Metrics</div>
-
+            <div class="group-label">Account</div>
+            
             <div class="field">
               <div class="field-top">
                 <label>Tenure</label>
                 <span class="field-val mono" id="v-tenure">12 <small>mo</small></span>
               </div>
               <input type="range" id="tenure" min="1" max="60" value="12" />
-              <div class="field-range-labels"><span>1 mo</span><span>60 mo</span></div>
+              <div class="field-range-labels">
+                <span>1</span><span>60</span>
+              </div>
             </div>
 
             <div class="field">
@@ -143,38 +127,46 @@
                 <span class="field-val mono" id="v-spend">€3,000</span>
               </div>
               <input type="range" id="spend" min="500" max="10000" step="100" value="3000" />
-              <div class="field-range-labels"><span>€500</span><span>€10k</span></div>
+              <div class="field-range-labels">
+                <span>500</span><span>10k</span>
+              </div>
             </div>
 
             <div class="field">
               <div class="field-top">
-                <label>Number of Users</label>
+                <label>Users</label>
                 <span class="field-val mono" id="v-users">50</span>
               </div>
               <input type="range" id="users" min="1" max="500" value="50" />
-              <div class="field-range-labels"><span>1</span><span>500</span></div>
+              <div class="field-range-labels">
+                <span>1</span><span>500</span>
+              </div>
             </div>
           </div>
 
           <div class="input-group">
-            <div class="group-label">Engagement Signals</div>
-
+            <div class="group-label">Engagement</div>
+            
             <div class="field">
               <div class="field-top">
-                <label>Support Tickets <small>(last 90d)</small></label>
+                <label>Support Tickets <small>(90d)</small></label>
                 <span class="field-val mono" id="v-tickets">3</span>
               </div>
               <input type="range" id="tickets" min="0" max="30" value="3" />
-              <div class="field-range-labels"><span>0</span><span>30</span></div>
+              <div class="field-range-labels">
+                <span>0</span><span>30</span>
+              </div>
             </div>
 
             <div class="field">
               <div class="field-top">
-                <label>Product Modules Used</label>
+                <label>Modules Used</label>
                 <span class="field-val mono" id="v-modules">5</span>
               </div>
               <input type="range" id="modules" min="1" max="10" value="5" />
-              <div class="field-range-labels"><span>1</span><span>10</span></div>
+              <div class="field-range-labels">
+                <span>1</span><span>10</span>
+              </div>
             </div>
 
             <div class="field">
@@ -183,7 +175,9 @@
                 <span class="field-val mono" id="v-lastlogin">7 <small>days ago</small></span>
               </div>
               <input type="range" id="lastlogin" min="1" max="120" value="7" />
-              <div class="field-range-labels"><span>1d</span><span>120d</span></div>
+              <div class="field-range-labels">
+                <span>1</span><span>120</span>
+              </div>
             </div>
 
             <div class="field">
@@ -192,15 +186,17 @@
                 <span class="field-val mono" id="v-nps">7 <small>/ 10</small></span>
               </div>
               <input type="range" id="nps" min="0" max="10" value="7" />
-              <div class="field-range-labels"><span>0</span><span>10</span></div>
+              <div class="field-range-labels">
+                <span>0</span><span>10</span>
+              </div>
             </div>
           </div>
 
           <div class="input-group">
-            <div class="group-label">Account Structure</div>
-
+            <div class="group-label">Structure</div>
+            
             <div class="field select-field">
-              <label>Contract Type</label>
+              <label>Contract</label>
               <select id="contract">
                 <option value="Monthly">Monthly</option>
                 <option value="Annual" selected>Annual</option>
@@ -220,21 +216,21 @@
             </div>
 
             <div class="field toggle-field">
-              <label>Onboarding Completed?</label>
+              <label>Onboarding</label>
               <div class="toggle-group">
                 <label class="toggle-opt">
                   <input type="radio" name="onboarding" value="yes" checked />
-                  <span>Yes</span>
+                  <span>Done</span>
                 </label>
                 <label class="toggle-opt">
                   <input type="radio" name="onboarding" value="no" />
-                  <span>No</span>
+                  <span>Incomplete</span>
                 </label>
               </div>
             </div>
 
             <div class="field toggle-field">
-              <label>Dedicated CSM?</label>
+              <label>CSM Assigned</label>
               <div class="toggle-group">
                 <label class="toggle-opt">
                   <input type="radio" name="csm" value="yes" checked />
@@ -246,104 +242,80 @@
                 </label>
               </div>
             </div>
+            
           </div>
-
         </div>
 
         <!-- Result Panel -->
         <div class="result-panel">
           <div class="result-inner">
-
-            <!-- Risk level label -->
-            <div class="risk-level-label" id="risk-level-label">—</div>
-
-            <!-- Big percentage -->
-            <div class="risk-pct" id="risk-pct">—</div>
+            <div id="risk-level-label" class="risk-level-label low">● Low Risk</div>
+            <div id="risk-pct" class="risk-pct low">8%</div>
             <div class="risk-pct-sub">churn probability</div>
 
-            <!-- Vertical thermometer bar -->
             <div class="thermo-wrap">
-              <div class="thermo-scale">
-                <span>100%</span>
-                <span>70%</span>
-                <span>40%</span>
-                <span>0%</span>
-              </div>
               <div class="thermo-track">
-                <div class="thermo-fill" id="thermo-fill"></div>
-                <div class="thermo-line high" style="bottom:70%">
-                  <span>HIGH</span>
-                </div>
-                <div class="thermo-line med" style="bottom:40%">
-                  <span>MED</span>
-                </div>
+                <div id="thermo-fill" class="thermo-fill"></div>
+                <div class="thermo-line" style="bottom: 40%"><span>40%</span></div>
+                <div class="thermo-line" style="bottom: 70%"><span>70%</span></div>
               </div>
             </div>
 
-            <!-- Top risk factors -->
-            <div class="risk-factors" id="risk-factors"></div>
-
-            <!-- Actions -->
-            <div class="actions-section" id="actions-section"></div>
-
+            <div id="risk-factors" class="risk-factors"></div>
+            <div id="actions-section" class="actions-section"></div>
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- ══════════════ 03 INSIGHTS ══════════════ -->
+    <!-- ══════════ INSIGHTS ══════════ -->
     <section id="tab-insights" class="tab">
-
       <div class="page-header">
-        <h2 class="page-title">Feature <em>Insights</em></h2>
-        <p class="page-sub">What drives churn most — Random Forest feature importance</p>
+        <h1 class="page-title">Feature <em>Insights</em></h1>
+        <p class="page-sub">What the model learned — which signals matter most.</p>
       </div>
 
       <div class="insights-layout">
-
         <div class="chart-block full">
           <div class="chart-header">
-            <span class="chart-tag">Model</span>
-            <h3>Feature Importance Ranking</h3>
+            <span class="chart-tag">Rank</span>
+            <h3>Feature Importance</h3>
           </div>
-          <canvas id="chartFeatures" height="320"></canvas>
+          <canvas id="chartFeatures"></canvas>
         </div>
 
         <div class="takeaways-row">
           <div class="takeaway">
             <div class="takeaway-num">01</div>
             <div class="takeaway-body">
-              <strong>Disengagement kills silently.</strong>
-              <p>Last Login Days is the #1 predictor. Clients who haven't logged in for 60+ days are 3× more likely to churn — reach out before they go fully dark.</p>
+              <strong>Disengagement is the loudest signal.</strong>
+              <p>Clients who haven't logged in for 60+ days are 3× more likely to churn. This outweighs every other factor — it's the single biggest predictor.</p>
             </div>
           </div>
           <div class="takeaway">
             <div class="takeaway-num">02</div>
             <div class="takeaway-body">
-              <strong>NPS is a leading indicator, not a lagging one.</strong>
-              <p>An NPS below 5, combined with rising support tickets, is a reliable early signal — not a post-mortem. Treat it as an alert, not a retrospective.</p>
+              <strong>NPS is a leading indicator, not lagging.</strong>
+              <p>An NPS below 5 combined with rising support tickets reliably predicts churn 30–60 days in advance. Treat it as an alert, not a retrospective.</p>
             </div>
           </div>
           <div class="takeaway">
             <div class="takeaway-num">03</div>
             <div class="takeaway-body">
-              <strong>Onboarding and CSM assignment are your safety net.</strong>
-              <p>Clients with complete onboarding and a dedicated CSM churn at nearly half the rate. The ROI on early investment in success pays compounding dividends.</p>
+              <strong>Onboarding pays compounding dividends.</strong>
+              <p>Clients with complete onboarding and a dedicated CSM churn at nearly half the rate. Early investment in success is the best retention lever.</p>
             </div>
           </div>
         </div>
-
       </div>
     </section>
 
   </main>
 
-  <!-- Footer -->
   <footer>
     <div class="footer-inner">
-      <span>Built by <a href="https://www.linkedin.com/in/shashank-tripathi-84b14b195/" target="_blank">Shashank Tripathi</a> — MiM @ ESCP Business School</span>
-      <span class="footer-note">Grounded in 2 years of enterprise account management at Shipsy &amp; ZingHR</span>
+      <span>Built by <a href="https://www.linkedin.com/in/shashank-tripathi-84b14b195/" target="_blank">Shashank Tripathi</a> — ESCP Business School</span>
+      <span class="footer-note">Grounded in 2 years of enterprise account management</span>
     </div>
   </footer>
 
