@@ -1,6 +1,6 @@
 # B2B SaaS Churn Predictor 📊
 
-An interactive machine learning web app that predicts client churn risk for B2B SaaS companies — built from hands-on experience managing enterprise accounts at Shipsy and ZingHR.
+An interactive machine learning web app that predicts client churn risk for B2B SaaS companies, running entirely in the browser using pre-trained feature weights.
 
 ## 🚀 Live Demo
 👉 **[Open the app](https://shashh-hash.github.io/saas-churn-predictor/)**
@@ -8,20 +8,27 @@ An interactive machine learning web app that predicts client churn risk for B2B 
 ## 💡 Motivation
 After 2 years as the primary interface between enterprise clients and SaaS product teams at Shipsy (logistics SaaS) and ZingHR (HR-tech), I noticed that churn was rarely a surprise. It was almost always preceded by the same signals: declining logins, rising support tickets, low NPS scores, and incomplete onboarding.
 
-This project turns those real-world observations into a predictive model. The dataset is synthetically generated, but the churn logic is grounded in actual patterns observed across 15+ enterprise accounts — factors like contract type, CSM assignment, and product adoption depth are weighted based on what genuinely moved the needle in practice.
+This project turns those real-world observations into a predictive model. The dataset is synthetically generated, but the churn logic is grounded in actual patterns observed across 15+ real enterprise accounts. Factors like contract type, CSM assignment, and product adoption depth are weighted based on what genuinely moved the needle in practice.
 
-## 🛠️ Features
-- **Dashboard** — Portfolio-level view of churn rates by contract type, industry, tenure, and NPS
-- **Churn Predictor** — Input any client profile and get an instant churn probability score with recommended actions
-- **Feature Insights** — Understand which signals drive churn most using Random Forest feature importance
+## 🏗 Architecture
+This project uses an honest "train then deploy" pipeline:
+1. **Python Data Generation**: Generates a synthetic dataset of 1,000 clients using a documented, probabilistic rule set with realistic noise (`generate_data.py`).
+2. **Python Model Training**: Trains a scikit-learn Random Forest on the dataset to learn the feature importances and exports them to a JSON file (`train_model.py`).
+3. **Static Web App**: The live GitHub Pages demo (`app.js`) is purely static JS. It fetches the exported feature weights at runtime to power the prediction engine—zero server or installation required. 
 
-## 🧠 Model
-- Algorithm: Random Forest Classifier (scikit-learn)
-- Dataset: Synthetically generated (1,000 clients) with churn logic grounded in real B2B SaaS account management experience
-- Features: Tenure, monthly spend, number of users, support tickets, product modules used, last login, NPS score, contract type, onboarding completion, CSM assignment, industry
-- Accuracy: ~80%+
+## 🔑 Key Findings
+Based on the trained model's feature importances, the signals that dominate churn prediction are:
+1. **Days Since Last Login**: The loudest signal. Disengaged users churn.
+2. **NPS Score**: An early warning sign before tickets escalate.
+3. **Support Tickets**: A lagging indicator of friction.
+4. **Monthly Spend**: Reflects the monetary value and commitment to the product.
 
-## ⚙️ Setup & Run
+## ⚠️ Limitations
+- **Synthetic Data**: The data (`data/clients.csv`) is synthetically generated using a probabilistic rule set. 
+- **Pipeline Validation, Not Real-World Claims**: The reported model accuracy metrics validate that the Random Forest correctly learned the rules used to generate the data. This accuracy is **not** a claim of real-world predictive performance.
+- **Domain Logic**: The learned feature weights reflect the domain logic encoded in the data generation script rather than being learned from raw historical outcomes.
+
+## ⚙️ Setup & Reproducibility
 
 ### 1. Clone the repo
 ```bash
@@ -29,30 +36,39 @@ git clone https://github.com/shashh-hash/saas-churn-predictor.git
 cd saas-churn-predictor
 ```
 
-### 2. Create a virtual environment
+### 2. Set up the Python Environment
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-```
-
-### 3. Install dependencies
-```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run the app
+### 3. Run the Pipeline
+Generate the data and train the model to output the feature weights:
 ```bash
-streamlit run app.py
+python3 generate_data.py
+python3 train_model.py
 ```
 
-The app will open automatically at `http://localhost:8501`
+### 4. Open the Web App
+Simply open `index.html` in your browser. It will dynamically load the weights from `model/feature_weights.json` to score churn locally.
+```bash
+open index.html
+```
 
 ## 📁 Project Structure
-```
+```text
 saas-churn-predictor/
-├── app.py              # Main Streamlit application
-├── generate_data.py    # Synthetic dataset generator
-├── requirements.txt    # Python dependencies
+├── data/
+│   └── clients.csv             # Generated synthetic dataset
+├── model/
+│   └── feature_weights.json    # Exported RF feature importances
+├── generate_data.py            # Synthetic dataset generator
+├── train_model.py              # Random Forest training script
+├── index.html                  # Static web app UI
+├── app.js                      # Static web app logic
+├── style.css                   # Static web app styling
+├── requirements.txt            # Minimal Python dependencies
 └── README.md
 ```
 

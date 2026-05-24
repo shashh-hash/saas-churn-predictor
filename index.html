@@ -37,9 +37,12 @@
 
     <!-- ══════════ DASHBOARD ══════════ -->
     <section id="tab-dashboard" class="tab active">
-      <div class="page-header">
-        <h1 class="page-title">Portfolio <em>Overview</em></h1>
-        <p class="page-sub">Synthetic B2B SaaS dataset · 1,000 accounts · Random Forest Classifier</p>
+      <div class="page-header flex-header">
+        <div class="title-group">
+          <h1 class="page-title">Portfolio <em>Overview</em></h1>
+          <p class="page-sub">Synthetic B2B SaaS dataset · 1,000 accounts · Random Forest Classifier</p>
+        </div>
+        <a href="data/clients.csv" download="saas_churn_dataset.csv" class="export-btn">⬇️ Export Dataset</a>
       </div>
 
       <div class="kpi-strip">
@@ -67,28 +70,28 @@
       <div class="chart-grid">
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Dist</span>
+            <span class="chart-tag">Illustrative Dist.</span>
             <h3>By Contract</h3>
           </div>
           <canvas id="chartContract"></canvas>
         </div>
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Dist</span>
+            <span class="chart-tag">Illustrative Dist.</span>
             <h3>By Industry</h3>
           </div>
           <canvas id="chartIndustry"></canvas>
         </div>
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Trend</span>
+            <span class="chart-tag">Illustrative Trend</span>
             <h3>Tenure vs Churn</h3>
           </div>
           <canvas id="chartTenure"></canvas>
         </div>
         <div class="chart-block">
           <div class="chart-header">
-            <span class="chart-tag">Trend</span>
+            <span class="chart-tag">Illustrative Trend</span>
             <h3>NPS vs Churn</h3>
           </div>
           <canvas id="chartNPS"></canvas>

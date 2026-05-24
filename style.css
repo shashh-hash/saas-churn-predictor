@@ -183,6 +183,34 @@ main {
 
 /* ── Page Header ──────────────────────────────────────────────── */
 .page-header { margin-bottom: 2.5rem; }
+.page-header.flex-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  background: var(--s2);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  font-size: 0.82rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.export-btn:hover {
+  background: var(--s3);
+  border-color: var(--accent);
+  color: var(--accent);
+}
 .page-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);

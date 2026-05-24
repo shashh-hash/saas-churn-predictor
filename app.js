@@ -14,6 +14,29 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
+// ── Feature Weights (Dynamically Loaded) ──────────────────
+let featureWeights = {
+  lastLogin: 0.278,
+  nps: 0.192,
+  tickets: 0.148,
+  spend: 0.091,
+  tenure: 0.083,
+  modules: 0.071,
+  users: 0.052,
+  contract: 0.038,
+  onboarding: 0.027,
+  csm: 0.011,
+  industry: 0.009
+};
+
+fetch('model/feature_weights.json')
+  .then(res => res.json())
+  .then(data => {
+    featureWeights = data;
+    updatePrediction();
+  })
+  .catch(err => console.warn('Using default weights. Could not load model/feature_weights.json:', err));
+
 // ── Chart global defaults ─────────────────────────────────
 Chart.defaults.color          = '#7a7167';
 Chart.defaults.borderColor    = '#272320';
@@ -179,19 +202,24 @@ new Chart(document.getElementById('chartNPS'), {
 let featureChartReady = false;
 function initFeatureChart() {
   featureChartReady = true;
-  const data = [
-    { label: 'Last Login Days',    val: 0.278 },
-    { label: 'NPS Score',          val: 0.192 },
-    { label: 'Support Tickets',    val: 0.148 },
-    { label: 'Monthly Spend',      val: 0.091 },
-    { label: 'Tenure',             val: 0.083 },
-    { label: 'Product Modules',    val: 0.071 },
-    { label: 'Num. of Users',      val: 0.052 },
-    { label: 'Contract Type',      val: 0.038 },
-    { label: 'Onboarding Done',    val: 0.027 },
-    { label: 'Has CSM',            val: 0.011 },
-    { label: 'Industry',           val: 0.009 },
-  ].sort((a, b) => b.val - a.val);
+  const labelsMap = {
+    lastLogin: 'Last Login Days',
+    nps: 'NPS Score',
+    tickets: 'Support Tickets',
+    spend: 'Monthly Spend',
+    tenure: 'Tenure',
+    modules: 'Product Modules',
+    users: 'Num. of Users',
+    contract: 'Contract Type',
+    onboarding: 'Onboarding Done',
+    csm: 'Has CSM',
+    industry: 'Industry'
+  };
+
+  const data = Object.keys(featureWeights).map(k => ({
+    label: labelsMap[k] || k,
+    val: featureWeights[k]
+  })).sort((a, b) => b.val - a.val);
 
   new Chart(document.getElementById('chartFeatures'), {
     type: 'bar',
@@ -244,6 +272,7 @@ function getInputs() {
     lastLogin: +document.getElementById('lastlogin').value,
     nps:       +document.getElementById('nps').value,
     contract:  document.getElementById('contract').value,
+    industry:  document.getElementById('industry').value,
     onboarding: document.querySelector('input[name="onboarding"]:checked').value === 'yes',
     csm:        document.querySelector('input[name="csm"]:checked').value === 'yes',
   };
@@ -283,19 +312,19 @@ function scoreChurn(f) {
   else if (f.industry === 'Fintech') nIndustry = 0.3;
   else if (f.industry === 'HR-Tech') nIndustry = 0.0;
 
-  // Weighted sum using exact feature importance mapped in the Insights tab
+  // Weighted sum using dynamically loaded feature importance
   const z_raw = 
-    (nLastLogin * 0.278) +
-    (nNPS       * 0.192) +
-    (nTickets   * 0.148) +
-    (nSpend     * 0.091) +
-    (nTenure    * 0.083) +
-    (nModules   * 0.071) +
-    (nUsers     * 0.052) +
-    (nContract  * 0.038) +
-    (nOnboarding* 0.027) +
-    (nCSM       * 0.011) +
-    (nIndustry  * 0.009);
+    (nLastLogin * featureWeights.lastLogin) +
+    (nNPS       * featureWeights.nps) +
+    (nTickets   * featureWeights.tickets) +
+    (nSpend     * featureWeights.spend) +
+    (nTenure    * featureWeights.tenure) +
+    (nModules   * featureWeights.modules) +
+    (nUsers     * featureWeights.users) +
+    (nContract  * featureWeights.contract) +
+    (nOnboarding* featureWeights.onboarding) +
+    (nCSM       * featureWeights.csm) +
+    (nIndustry  * featureWeights.industry);
 
   // Map the raw linear sum to a probability using a sigmoid S-curve.
   // We set the inflection point at 0.45 so average clients get ~10-25% risk.
