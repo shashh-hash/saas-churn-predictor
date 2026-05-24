@@ -275,14 +275,14 @@
     <section id="tab-insights" class="tab">
       <div class="page-header">
         <h1 class="page-title">Feature <em>Insights</em></h1>
-        <p class="page-sub">What the model learned — which signals matter most.</p>
+        <p class="page-sub">Scoring weights derived from the generator's domain-logic coefficients, normalised to sum to 1.</p>
       </div>
 
       <div class="insights-layout">
         <div class="chart-block full">
           <div class="chart-header">
             <span class="chart-tag">Rank</span>
-            <h3>Feature Importance</h3>
+            <h3>Feature Importance (Generator-Derived)</h3>
           </div>
           <canvas id="chartFeatures"></canvas>
         </div>
@@ -291,22 +291,22 @@
           <div class="takeaway">
             <div class="takeaway-num">01</div>
             <div class="takeaway-body">
-              <strong>Disengagement is the loudest signal.</strong>
-              <p>Clients who haven't logged in for 60+ days are 3× more likely to churn. This outweighs every other factor — it's the single biggest predictor.</p>
+              <strong>Login recency is the single strongest signal (19%).</strong>
+              <p>Clients who haven't logged in for 60+ days carry the highest churn coefficient in the generator. Track logins weekly and intervene early.</p>
             </div>
           </div>
           <div class="takeaway">
             <div class="takeaway-num">02</div>
             <div class="takeaway-body">
-              <strong>NPS is a leading indicator, not lagging.</strong>
-              <p>An NPS below 5 combined with rising support tickets reliably predicts churn 30–60 days in advance. Treat it as an alert, not a retrospective.</p>
+              <strong>Low NPS and rising tickets are the next tier (14% + 12%).</strong>
+              <p>An NPS below 6 combined with elevated support tickets is a strong compound signal. Treat NPS as a leading indicator, not a retrospective.</p>
             </div>
           </div>
           <div class="takeaway">
             <div class="takeaway-num">03</div>
             <div class="takeaway-body">
-              <strong>Onboarding pays compounding dividends.</strong>
-              <p>Clients with complete onboarding and a dedicated CSM churn at nearly half the rate. Early investment in success is the best retention lever.</p>
+              <strong>Onboarding and tenure are tied at 9.5% each.</strong>
+              <p>Incomplete onboarding and short tenure both materially increase risk. Early investment in customer success pays compounding dividends.</p>
             </div>
           </div>
         </div>

@@ -15,18 +15,21 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ── Feature Weights (Dynamically Loaded) ──────────────────
+// Fallback values match the normalised coefficients from generate_data.py.
+// They are identical to the contents of model/feature_weights.json so the
+// app behaves the same whether or not the fetch succeeds.
 let featureWeights = {
-  lastLogin: 0.278,
-  nps: 0.192,
-  tickets: 0.148,
-  spend: 0.091,
-  tenure: 0.083,
+  lastLogin: 0.190,
+  nps: 0.143,
+  tickets: 0.119,
+  tenure: 0.095,
+  onboarding: 0.095,
+  contract: 0.071,
   modules: 0.071,
-  users: 0.052,
-  contract: 0.038,
-  onboarding: 0.027,
-  csm: 0.011,
-  industry: 0.009
+  industry: 0.071,
+  spend: 0.048,
+  csm: 0.048,
+  users: 0.048
 };
 
 fetch('model/feature_weights.json')

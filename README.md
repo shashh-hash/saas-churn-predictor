@@ -12,16 +12,17 @@ This project turns those real-world observations into a predictive model. The da
 
 ## 🏗 Architecture
 This project uses an honest "train then deploy" pipeline:
-1. **Python Data Generation**: Generates a synthetic dataset of 1,000 clients using a documented, probabilistic rule set with realistic noise (`generate_data.py`).
-2. **Python Model Training**: Trains a scikit-learn Random Forest on the dataset to learn the feature importances and exports them to a JSON file (`train_model.py`).
-3. **Static Web App**: The live GitHub Pages demo (`app.js`) is purely static JS. It fetches the exported feature weights at runtime to power the prediction engine—zero server or installation required. 
+1. **Python Data Generation**: Generates a synthetic dataset of 1,000 clients using a documented, probabilistic rule set with realistic noise (`generate_data.py`). The coefficients in this script are the single source of truth for which signals drive churn.
+2. **Python Model Training**: Trains a scikit-learn Random Forest purely as a **validation step** (can the signal be recovered from noisy data?). The scoring weights exported to `model/feature_weights.json` are derived from the generator's coefficients—normalised to sum to 1—**not** from the Random Forest's raw `feature_importances_`, which are misleadingly flat due to threshold-based rules leaking importance to high-cardinality continuous columns.
+3. **Static Web App**: The live GitHub Pages demo (`app.js`) is purely static JS. It fetches `model/feature_weights.json` at runtime to power the prediction engine—zero server or installation required.
 
 ## 🔑 Key Findings
-Based on the trained model's feature importances, the signals that dominate churn prediction are:
-1. **Days Since Last Login**: The loudest signal. Disengaged users churn.
-2. **NPS Score**: An early warning sign before tickets escalate.
-3. **Support Tickets**: A lagging indicator of friction.
-4. **Monthly Spend**: Reflects the monetary value and commitment to the product.
+Based on the generator's domain-logic coefficients (which drive the scoring weights), the signals that dominate churn prediction are:
+1. **Days Since Last Login** (19.0%) — The loudest signal. Clients inactive 60+ days are the highest-risk group.
+2. **NPS Score** (14.3%) — A leading early-warning sign; NPS below 6 reliably precedes churn.
+3. **Support Tickets** (11.9%) — Rising tickets indicate unresolved friction.
+4. **Tenure & Onboarding** (9.5% each) — Short tenure and incomplete onboarding are tied as the next strongest drivers.
+5. **Contract Type, Modules Used & Industry** (7.1% each) — Monthly contracts, low module adoption, and higher-risk verticals (Retail, Healthcare) add meaningful signal.
 
 ## ⚠️ Limitations
 - **Synthetic Data**: The data (`data/clients.csv`) is synthetically generated using a probabilistic rule set. 
@@ -62,7 +63,7 @@ saas-churn-predictor/
 ├── data/
 │   └── clients.csv             # Generated synthetic dataset
 ├── model/
-│   └── feature_weights.json    # Exported RF feature importances
+│   └── feature_weights.json    # Generator-derived scoring weights (normalised)
 ├── generate_data.py            # Synthetic dataset generator
 ├── train_model.py              # Random Forest training script
 ├── index.html                  # Static web app UI
